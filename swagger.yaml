@@ -1,0 +1,86 @@
+openapi: 3.0.4
+info:
+  title: Linktopath API
+  version: 0.1.0
+  description:
+    The Linktopath API defines REST endpoints to interact with the underlying
+    Linktopath link prettifier service.
+  contact:
+    email: thorbert.anson@gmail.com
+  license:
+    name: MIT
+    url: https://opensource.org/license/MIT
+
+tags:
+  - name: shortcut
+    description: URLs (source_url) mapped onto path segments (slug)
+
+paths:
+  /{slug}:
+    get:
+      tags:
+        - shortcut
+      summary: Fetch the source_url associated with the slug
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uri
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuerySourceURLResponse"
+          description: Successfully fetched the <code>source_url</code>
+        "404":
+          description: The shortcut does not exist or has expired
+  /shortcut:
+    put:
+      tags:
+        - shortcut
+      summary: Create a shortcut from the source_url to the slug
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateShortcut"
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shortcut"
+          description: Successfully created a shortcut
+        "204":
+          description:
+            Shortcut with provided <code>source_url</code> and <code>slug</code>
+            already exists
+
+components:
+  schemas:
+    QuerySourceURLResponse:
+      type: object
+      properties:
+        source_url:
+          type: string
+          format: uri
+    CreateShortcut:
+      type: object
+      properties:
+        source_url:
+          type: string
+          format: uri
+        slug:
+          type: string
+        expiry_date:
+          type: string
+          format: date-time
+    Shortcut:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
