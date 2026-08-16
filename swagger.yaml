@@ -54,10 +54,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/Shortcut"
           description: Successfully created a shortcut
-        "204":
+        "409":
           description:
-            Shortcut with provided <code>source_url</code> and <code>slug</code>
-            already exists
+            Shortcut with the provided <code>slug</code> already exists
+        "422":
+          description:
+            The request body is valid JSON, but doesn't conform to the expected
+            schema.
 
 components:
   schemas:
